@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Carnet photo</title>
+<title>Carnet photo ROBOPLANET</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
@@ -14,13 +14,13 @@
   body{min-height:100vh;max-width:920px;margin:0 auto;padding:22px 16px 70px}
   .btn{appearance:none;border:0;cursor:pointer;font-family:inherit;font-weight:700;background:var(--orange);color:#fff;padding:12px 20px;border-radius:10px;font-size:15px;transition:background .15s,transform .05s}
   .btn:hover{background:var(--orange-dim)} .btn:active{transform:translateY(1px)}
-  .btn:disabled{opacity:.4;cursor:not-allowed}
-  .btn.ghost{background:transparent;border:1px solid var(--navy-line);color:#fff;font-weight:500}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn.ghost{background:transparent;border:1px solid var(--navy-line);color:#fff;font-weight:500;font-size:13px;padding:9px 13px}
   .btn.ghost:hover{background:rgba(255,255,255,.06)}
   .btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
   input[type=file]{display:none}
-
-  /* ---- Écran de démarrage ---- */
+ 
+  /* Écran de démarrage */
   .setup{position:fixed;inset:0;background:var(--navy);display:none;align-items:center;justify-content:center;padding:24px;z-index:50}
   .setup.show{display:flex}
   .setup .box{width:100%;max-width:420px;text-align:center}
@@ -29,17 +29,17 @@
   .setup p{color:var(--ink-dim);font-size:14px;margin-bottom:22px;line-height:1.5}
   .setup input{width:100%;background:var(--navy-soft);border:1px solid var(--navy-line);border-radius:11px;color:#fff;font-family:inherit;font-size:17px;padding:14px;text-align:center;margin-bottom:14px}
   .setup input:focus{outline:none;border-color:var(--orange)}
-
-  /* ---- En-tête ---- */
+ 
+  /* En-tête */
   header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
   header .dot{width:11px;height:11px;border-radius:2px;background:var(--orange)}
   #bookName{font-family:"DM Serif Display",serif;font-size:27px;font-weight:400;background:transparent;border:0;border-bottom:1px solid transparent;color:#fff;padding:2px 0;min-width:160px;flex:1}
   #bookName:hover{border-bottom-color:var(--navy-line)} #bookName:focus{outline:none;border-bottom-color:var(--orange)}
-  .tools{display:flex;gap:8px;align-items:center}
+  .tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   select{background:var(--navy-soft);border:1px solid var(--navy-line);color:#fff;font-family:inherit;font-size:13px;padding:9px 10px;border-radius:9px}
   .count{color:var(--ink-dim);font-size:13px;margin:2px 0 22px}
-
-  /* ---- Formulaire d'ajout ---- */
+ 
+  /* Formulaire d'ajout */
   .add{background:var(--navy-soft);border:1px solid var(--navy-line);border-radius:16px;padding:16px;margin-bottom:26px}
   .add .grid{display:grid;grid-template-columns:1fr 140px;gap:14px}
   .add label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-dim);margin:0 0 6px}
@@ -50,8 +50,8 @@
   .shot:hover{border-color:var(--orange)} .shot .big{font-size:26px}
   .shot img{width:100%;height:100%;object-fit:cover}
   .add .foot{display:flex;justify-content:flex-end;margin-top:14px}
-
-  /* ---- Tableau ---- */
+ 
+  /* Tableau */
   .thead,.row{display:grid;grid-template-columns:74px 1.1fr 2fr 38px;gap:14px;align-items:center}
   .thead{padding:0 14px 10px;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-dim)}
   .row{background:var(--navy-soft);border:1px solid var(--navy-line);border-radius:13px;padding:12px 14px;margin-bottom:12px}
@@ -62,11 +62,14 @@
   .row .del{background:transparent;border:0;color:var(--ink-dim);font-size:20px;cursor:pointer;line-height:1;padding:4px}
   .row .del:hover{color:var(--orange)}
   .empty{color:var(--ink-dim);font-size:14px;text-align:center;padding:26px;border:1px dashed var(--navy-line);border-radius:13px}
-
-  /* ---- Lightbox ---- */
+ 
+  /* Lightbox */
   .lb{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;padding:20px;z-index:60;cursor:zoom-out}
   .lb.show{display:flex} .lb img{max-width:100%;max-height:100%;border-radius:8px}
-
+ 
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#fff;color:var(--navy);font-weight:700;font-size:14px;padding:12px 18px;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:70}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+ 
   @media (max-width:560px){
     .add .grid{grid-template-columns:1fr} .shot{aspect-ratio:16/9}
     .thead{display:none}
@@ -74,15 +77,9 @@
     .row .thumb{width:100%;height:auto;aspect-ratio:4/3}
     .row .del{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);border-radius:8px}
   }
-  @media print{
-    body{max-width:none} .add,.tools,.count,#fileInput,.del{display:none!important}
-    .row,.thead{display:grid} .row{break-inside:avoid;border-color:#ccc}
-    body,.row{background:#fff;color:#000} #bookName{color:#000}
-    .row .rcomment{color:#222}
-  }
   canvas{display:none}
 </style>
-
+ 
 <!-- Écran : nommer le tableau -->
 <div class="setup" id="setup">
   <div class="box">
@@ -93,7 +90,7 @@
     <button class="btn" id="setupGo" style="width:100%">Créer le tableau</button>
   </div>
 </div>
-
+ 
 <!-- App -->
 <div id="app" style="display:none">
   <header>
@@ -102,11 +99,12 @@
     <div class="tools">
       <select id="bookSwitch" aria-label="Changer de tableau"></select>
       <button class="btn ghost" id="newBook">+ Tableau</button>
-      <button class="btn ghost" id="printBtn">Imprimer</button>
+      <button class="btn ghost" id="logoBtn">Logo</button>
+      <button class="btn" id="wordBtn">Word (.docx)</button>
     </div>
   </header>
   <div class="count" id="count"></div>
-
+ 
   <div class="add">
     <div class="grid">
       <div>
@@ -119,26 +117,29 @@
         <label>Photo</label>
         <div class="shot" id="shot">
           <span class="big">📷</span>
-          <span id="shotLabel">Prendre / choisir</span>
+          <span>Prendre / choisir</span>
         </div>
       </div>
     </div>
     <input type="file" id="fileInput" accept="image/*" capture="environment">
+    <input type="file" id="logoInput" accept="image/*">
     <div class="foot">
       <button class="btn" id="addBtn" disabled>Ajouter au tableau</button>
     </div>
   </div>
-
+ 
   <div class="thead"><div>Photo</div><div>Titre</div><div>Commentaire</div><div></div></div>
   <div id="rows"></div>
 </div>
-
+ 
 <div class="lb" id="lb"><img id="lbImg" alt=""></div>
+<div class="toast" id="toast"></div>
 <canvas id="cv"></canvas>
-
+ 
 <script>
 const $ = s => document.querySelector(s);
-
+const toast = (msg) => { const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); };
+ 
 /* Stockage : localStorage si dispo (fichier ouvert/déployé), sinon mémoire (aperçu) */
 const store = (() => {
   let mem = {}, ok = false;
@@ -148,13 +149,14 @@ const store = (() => {
     set(k,v){ if(ok){ try{ localStorage.setItem(k,JSON.stringify(v)); return; }catch(e){} } mem[k]=v; }
   };
 })();
-
-let data = store.get('carnet') || { books:{}, current:null };
+ 
+let data = store.get('carnet') || { books:{}, current:null, logo:null };
+if(!('logo' in data)) data.logo = null;
 let pendingPhoto = null;
 const save = () => store.set('carnet', data);
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
-
-/* ---- Démarrage ---- */
+ 
+/* Démarrage */
 function boot(){
   const ids = Object.keys(data.books);
   if(!ids.length || !data.current || !data.books[data.current]) openSetup();
@@ -162,7 +164,7 @@ function boot(){
 }
 function openSetup(){ $('#setup').classList.add('show'); $('#app').style.display='none'; $('#setupName').value=''; $('#setupName').focus(); }
 function openApp(){ $('#setup').classList.remove('show'); $('#app').style.display='block'; render(); }
-
+ 
 $('#setupGo').onclick = createBook;
 $('#setupName').addEventListener('keydown', e => { if(e.key==='Enter') createBook(); });
 function createBook(){
@@ -172,11 +174,11 @@ function createBook(){
   data.current = id; save(); openApp();
 }
 $('#newBook').onclick = openSetup;
-
-/* ---- Nom du tableau ---- */
+ 
+/* Nom du tableau */
 $('#bookName').addEventListener('input', e => { data.books[data.current].name = e.target.value; save(); refreshSwitch(); });
-
-/* ---- Changement de tableau ---- */
+ 
+/* Changement de tableau */
 $('#bookSwitch').onchange = e => { data.current = e.target.value; save(); render(); };
 function refreshSwitch(){
   const sel = $('#bookSwitch');
@@ -184,33 +186,48 @@ function refreshSwitch(){
     .map(([id,b]) => `<option value="${id}">${(b.name||'Sans nom').replace(/</g,'&lt;')}</option>`).join('');
   sel.value = data.current;
 }
-
-/* ---- Photo ---- */
+ 
+/* Logo */
+$('#logoBtn').onclick = () => $('#logoInput').click();
+$('#logoInput').onclick = e => { e.target.value=''; };
+$('#logoInput').onchange = e => {
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => resize(r.result, {max:400, mime:'image/png'}, out => {
+    data.logo = out; save(); refreshLogoBtn(); toast('Logo enregistré');
+  });
+  r.readAsDataURL(f);
+};
+function refreshLogoBtn(){ $('#logoBtn').textContent = data.logo ? 'Logo ✓' : 'Logo'; }
+ 
+/* Photo */
 $('#shot').onclick = () => $('#fileInput').click();
 $('#fileInput').onclick = e => { e.target.value=''; };
 $('#fileInput').onchange = e => {
   const f = e.target.files[0]; if(!f) return;
   const r = new FileReader();
-  r.onload = () => resize(r.result, out => {
+  r.onload = () => resize(r.result, {max:1280, mime:'image/jpeg'}, out => {
     pendingPhoto = out;
     $('#shot').innerHTML = `<img src="${out}" alt="">`;
-    $('#shotLabel') && null;
     $('#addBtn').disabled = false;
   });
   r.readAsDataURL(f);
 };
-function resize(src, cb){
+function resize(src, opt, cb){
   const img = new Image();
   img.onload = () => {
-    const max=1280; let {naturalWidth:w, naturalHeight:h} = img;
-    const r = Math.min(1, max/Math.max(w,h)); w=Math.round(w*r); h=Math.round(h*r);
-    const c=$('#cv'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h);
-    cb(c.toDataURL('image/jpeg',0.82));
+    let w=img.naturalWidth, h=img.naturalHeight;
+    const r = Math.min(1, opt.max/Math.max(w,h)); w=Math.round(w*r); h=Math.round(h*r);
+    const c=$('#cv'); c.width=w; c.height=h;
+    const ctx=c.getContext('2d');
+    if(opt.mime==='image/jpeg'){ ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h); }
+    ctx.drawImage(img,0,0,w,h);
+    cb(c.toDataURL(opt.mime, opt.mime==='image/jpeg'?0.82:undefined));
   };
   img.src = src;
 }
-
-/* ---- Ajouter une entrée ---- */
+ 
+/* Ajouter une entrée */
 $('#addBtn').onclick = () => {
   if(!pendingPhoto) return;
   data.books[data.current].entries.unshift({
@@ -219,19 +236,19 @@ $('#addBtn').onclick = () => {
   });
   save();
   $('#title').value=''; $('#comment').value=''; pendingPhoto=null;
-  $('#shot').innerHTML = `<span class="big">📷</span><span id="shotLabel">Prendre / choisir</span>`;
+  $('#shot').innerHTML = `<span class="big">📷</span><span>Prendre / choisir</span>`;
   $('#addBtn').disabled = true;
   render(); $('#title').focus();
 };
-
-/* ---- Rendu ---- */
+ 
+/* Rendu écran */
 function fmt(t){ const d=new Date(t);
-  return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})+' · '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
-
+  return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' · '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
+ 
 function render(){
   const b = data.books[data.current];
   $('#bookName').value = b.name;
-  refreshSwitch();
+  refreshSwitch(); refreshLogoBtn();
   $('#count').textContent = b.entries.length + (b.entries.length>1?' entrées':' entrée');
   const rows = $('#rows');
   if(!b.entries.length){ rows.innerHTML = '<div class="empty">Ajoute ta première photo ci-dessus.</div>'; return; }
@@ -247,15 +264,111 @@ function render(){
     row.querySelector('.rtitle').textContent = en.title || '(sans titre)';
     row.querySelector('.rcomment').textContent = en.comment || '';
     row.querySelector('.thumb').onclick = () => { $('#lbImg').src = en.photo; $('#lb').classList.add('show'); };
-    row.querySelector('.del').onclick = () => {
-      b.entries = b.entries.filter(x => x.id !== en.id); save(); render();
-    };
+    row.querySelector('.del').onclick = () => { b.entries = b.entries.filter(x => x.id !== en.id); save(); render(); };
     rows.appendChild(row);
   });
 }
-
 $('#lb').onclick = () => $('#lb').classList.remove('show');
-$('#printBtn').onclick = () => window.print();
-
+ 
+/* ---------- Export Word (.docx) ---------- */
+let docxReady = null;
+function loadDocx(){
+  if(window.docx) return Promise.resolve(window.docx);
+  if(docxReady) return docxReady;
+  docxReady = new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/docx@9/build/index.umd.js';
+    s.onload=()=>window.docx?res(window.docx):rej(new Error('global'));
+    s.onerror=()=>rej(new Error('cdn'));
+    document.head.appendChild(s);
+  });
+  return docxReady;
+}
+function b64ToBytes(dataUrl){
+  const bin = atob(dataUrl.split(',')[1]); const n=bin.length; const a=new Uint8Array(n);
+  for(let i=0;i<n;i++) a[i]=bin.charCodeAt(i); return a;
+}
+function imgDims(src){ return new Promise(res=>{ const i=new Image(); i.onload=()=>res({w:i.naturalWidth,h:i.naturalHeight}); i.src=src; }); }
+ 
+$('#wordBtn').onclick = exportDocx;
+async function exportDocx(){
+  const btn=$('#wordBtn'); const old=btn.textContent;
+  btn.disabled=true; btn.textContent='Génération…';
+  let D;
+  try { D = await loadDocx(); }
+  catch(e){ btn.disabled=false; btn.textContent=old; toast('Module Word indisponible (vérifie le HTTPS / la connexion)'); return; }
+ 
+  const { Document, Packer, Paragraph, TextRun, ImageRun, Table, TableRow, TableCell,
+          WidthType, AlignmentType, BorderStyle, VerticalAlign, Header, Footer } = D;
+  const NAVY='1A1F36', ORANGE='D94215', GREY='8A90A6', LINE='D8DBE3', BODY='2B2F45';
+  const b = data.books[data.current];
+  const list = b.entries.slice().reverse(); // ordre chronologique dans le rapport
+ 
+  // En-tête : logo en haut à droite (ou mot-symbole de repli)
+  let headerKids;
+  if(data.logo){
+    const d = await imgDims(data.logo); const h=40, w=Math.round(h*d.w/d.h);
+    headerKids=[ new Paragraph({ alignment:AlignmentType.RIGHT, children:[
+      new ImageRun({ type:'png', data:b64ToBytes(data.logo), transformation:{width:w,height:h} }) ] }) ];
+  } else {
+    headerKids=[ new Paragraph({ alignment:AlignmentType.RIGHT, children:[
+      new TextRun({ text:'ROBO', bold:true, color:NAVY, size:28, font:'Arial' }),
+      new TextRun({ text:'PLANET', bold:true, color:ORANGE, size:28, font:'Arial' }) ] }) ];
+  }
+ 
+  const hcell = t => new TableCell({ shading:{fill:NAVY}, verticalAlign:VerticalAlign.CENTER,
+    margins:{top:90,bottom:90,left:130,right:130},
+    children:[ new Paragraph({ children:[ new TextRun({ text:t, bold:true, color:'FFFFFF', size:19, font:'Arial' }) ] }) ] });
+  const rows=[ new TableRow({ tableHeader:true, children:[ hcell('N°'), hcell('Photo'), hcell('Titre'), hcell('Commentaire') ] }) ];
+ 
+  let n=1;
+  for(const en of list){
+    const d = await imgDims(en.photo); const w=140, h=Math.round(w*d.h/d.w);
+    const cell = (kids)=> new TableCell({ verticalAlign:VerticalAlign.CENTER, margins:{top:110,bottom:110,left:130,right:130}, children:kids });
+    rows.push(new TableRow({ children:[
+      cell([ new Paragraph({ children:[ new TextRun({ text:String(n), font:'Arial', size:19, color:'555555' }) ] }) ]),
+      cell([ new Paragraph({ children:[ new ImageRun({ type:'jpg', data:b64ToBytes(en.photo), transformation:{width:w,height:h} }) ] }) ]),
+      cell([ new Paragraph({ children:[ new TextRun({ text:en.title||'(sans titre)', bold:true, font:'Arial', size:21, color:NAVY }) ] }),
+             new Paragraph({ spacing:{before:50}, children:[ new TextRun({ text:fmt(en.when), font:'Arial', size:16, color:GREY }) ] }) ]),
+      cell([ new Paragraph({ children:[ new TextRun({ text:en.comment||'—', font:'Arial', size:20, color:BODY }) ] }) ]),
+    ]}));
+    n++;
+  }
+ 
+  const bd={ style:BorderStyle.SINGLE, size:4, color:LINE };
+  const table=new Table({
+    width:{ size:9026, type:WidthType.DXA },
+    columnWidths:[620,2400,2806,3200],
+    borders:{ top:bd,bottom:bd,left:bd,right:bd,insideHorizontal:bd,insideVertical:bd },
+    rows
+  });
+ 
+  const doc=new Document({
+    sections:[{
+      properties:{ page:{ size:{width:11906,height:16838}, margin:{top:1134,bottom:1134,left:1134,right:1134} } },
+      headers:{ default:new Header({ children:headerKids }) },
+      footers:{ default:new Footer({ children:[ new Paragraph({ alignment:AlignmentType.CENTER,
+        children:[ new TextRun({ text:'ROBOPLANET — Inspection robotisée', font:'Arial', size:15, color:GREY }) ] }) ] }) },
+      children:[
+        new Paragraph({ spacing:{after:60}, children:[ new TextRun({ text:b.name||'Carnet photo', bold:true, font:'Arial', size:40, color:NAVY }) ] }),
+        new Paragraph({ spacing:{after:260}, children:[ new TextRun({
+          text:`${list.length} entrée${list.length>1?'s':''}  ·  généré le ${fmt(Date.now())}`, font:'Arial', size:18, color:GREY }) ] }),
+        table
+      ]
+    }]
+  });
+ 
+  try{
+    const blob = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=(b.name||'carnet').replace(/[^\w\-]+/g,'_').slice(0,50)+'.docx';
+    a.click(); URL.revokeObjectURL(url);
+    toast('Word généré');
+  }catch(e){ toast('Erreur pendant la génération'); }
+  btn.disabled=false; btn.textContent=old;
+}
+ 
 boot();
 </script>
+ 
