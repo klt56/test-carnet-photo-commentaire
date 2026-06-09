@@ -1,0 +1,261 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carnet photo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1A1F36; --navy-soft:#21273f; --navy-line:rgba(255,255,255,.09);
+    --orange:#D94215; --orange-dim:#b8360f; --ink-dim:#9aa0b8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--navy);color:#fff;font-family:"DM Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  body{min-height:100vh;max-width:920px;margin:0 auto;padding:22px 16px 70px}
+  .btn{appearance:none;border:0;cursor:pointer;font-family:inherit;font-weight:700;background:var(--orange);color:#fff;padding:12px 20px;border-radius:10px;font-size:15px;transition:background .15s,transform .05s}
+  .btn:hover{background:var(--orange-dim)} .btn:active{transform:translateY(1px)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn.ghost{background:transparent;border:1px solid var(--navy-line);color:#fff;font-weight:500}
+  .btn.ghost:hover{background:rgba(255,255,255,.06)}
+  .btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
+  input[type=file]{display:none}
+
+  /* ---- Écran de démarrage ---- */
+  .setup{position:fixed;inset:0;background:var(--navy);display:none;align-items:center;justify-content:center;padding:24px;z-index:50}
+  .setup.show{display:flex}
+  .setup .box{width:100%;max-width:420px;text-align:center}
+  .setup .dot{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--orange);margin-bottom:14px}
+  .setup h1{font-family:"DM Serif Display",serif;font-weight:400;font-size:30px;margin-bottom:8px}
+  .setup p{color:var(--ink-dim);font-size:14px;margin-bottom:22px;line-height:1.5}
+  .setup input{width:100%;background:var(--navy-soft);border:1px solid var(--navy-line);border-radius:11px;color:#fff;font-family:inherit;font-size:17px;padding:14px;text-align:center;margin-bottom:14px}
+  .setup input:focus{outline:none;border-color:var(--orange)}
+
+  /* ---- En-tête ---- */
+  header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  header .dot{width:11px;height:11px;border-radius:2px;background:var(--orange)}
+  #bookName{font-family:"DM Serif Display",serif;font-size:27px;font-weight:400;background:transparent;border:0;border-bottom:1px solid transparent;color:#fff;padding:2px 0;min-width:160px;flex:1}
+  #bookName:hover{border-bottom-color:var(--navy-line)} #bookName:focus{outline:none;border-bottom-color:var(--orange)}
+  .tools{display:flex;gap:8px;align-items:center}
+  select{background:var(--navy-soft);border:1px solid var(--navy-line);color:#fff;font-family:inherit;font-size:13px;padding:9px 10px;border-radius:9px}
+  .count{color:var(--ink-dim);font-size:13px;margin:2px 0 22px}
+
+  /* ---- Formulaire d'ajout ---- */
+  .add{background:var(--navy-soft);border:1px solid var(--navy-line);border-radius:16px;padding:16px;margin-bottom:26px}
+  .add .grid{display:grid;grid-template-columns:1fr 140px;gap:14px}
+  .add label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-dim);margin:0 0 6px}
+  .add input[type=text],.add textarea{width:100%;background:var(--navy);border:1px solid var(--navy-line);border-radius:9px;color:#fff;font-family:inherit;font-size:15px;padding:11px 12px}
+  .add input:focus,.add textarea:focus{outline:none;border-color:var(--orange)}
+  .add textarea{min-height:64px;resize:vertical}
+  .shot{aspect-ratio:1;border:1.5px dashed rgba(217,66,21,.55);border-radius:12px;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-dim);font-size:12px;text-align:center;overflow:hidden;gap:6px;padding:6px}
+  .shot:hover{border-color:var(--orange)} .shot .big{font-size:26px}
+  .shot img{width:100%;height:100%;object-fit:cover}
+  .add .foot{display:flex;justify-content:flex-end;margin-top:14px}
+
+  /* ---- Tableau ---- */
+  .thead,.row{display:grid;grid-template-columns:74px 1.1fr 2fr 38px;gap:14px;align-items:center}
+  .thead{padding:0 14px 10px;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-dim)}
+  .row{background:var(--navy-soft);border:1px solid var(--navy-line);border-radius:13px;padding:12px 14px;margin-bottom:12px}
+  .row .thumb{width:74px;height:74px;border-radius:9px;object-fit:cover;cursor:pointer;background:#000}
+  .row .rtitle{font-weight:700;font-size:15px;word-break:break-word}
+  .row .rcomment{font-size:14px;line-height:1.45;color:#dfe2f0;white-space:pre-wrap;word-break:break-word}
+  .row .rwhen{font-size:11px;color:var(--ink-dim);margin-top:5px}
+  .row .del{background:transparent;border:0;color:var(--ink-dim);font-size:20px;cursor:pointer;line-height:1;padding:4px}
+  .row .del:hover{color:var(--orange)}
+  .empty{color:var(--ink-dim);font-size:14px;text-align:center;padding:26px;border:1px dashed var(--navy-line);border-radius:13px}
+
+  /* ---- Lightbox ---- */
+  .lb{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;padding:20px;z-index:60;cursor:zoom-out}
+  .lb.show{display:flex} .lb img{max-width:100%;max-height:100%;border-radius:8px}
+
+  @media (max-width:560px){
+    .add .grid{grid-template-columns:1fr} .shot{aspect-ratio:16/9}
+    .thead{display:none}
+    .row{grid-template-columns:1fr;gap:8px;position:relative}
+    .row .thumb{width:100%;height:auto;aspect-ratio:4/3}
+    .row .del{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);border-radius:8px}
+  }
+  @media print{
+    body{max-width:none} .add,.tools,.count,#fileInput,.del{display:none!important}
+    .row,.thead{display:grid} .row{break-inside:avoid;border-color:#ccc}
+    body,.row{background:#fff;color:#000} #bookName{color:#000}
+    .row .rcomment{color:#222}
+  }
+  canvas{display:none}
+</style>
+
+<!-- Écran : nommer le tableau -->
+<div class="setup" id="setup">
+  <div class="box">
+    <span class="dot"></span>
+    <h1>Nouveau tableau</h1>
+    <p>Donne un nom à ce carnet. Toutes tes photos s'ajouteront dedans jusqu'à ce que tu en crées un autre.</p>
+    <input type="text" id="setupName" placeholder="ex. Inspection cuve A156 — 09/06">
+    <button class="btn" id="setupGo" style="width:100%">Créer le tableau</button>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app" style="display:none">
+  <header>
+    <span class="dot"></span>
+    <input id="bookName" aria-label="Nom du tableau">
+    <div class="tools">
+      <select id="bookSwitch" aria-label="Changer de tableau"></select>
+      <button class="btn ghost" id="newBook">+ Tableau</button>
+      <button class="btn ghost" id="printBtn">Imprimer</button>
+    </div>
+  </header>
+  <div class="count" id="count"></div>
+
+  <div class="add">
+    <div class="grid">
+      <div>
+        <label for="title">Titre de la photo</label>
+        <input type="text" id="title" placeholder="ex. Virole 3 — corrosion zone basse">
+        <label for="comment" style="margin-top:12px">Commentaire</label>
+        <textarea id="comment" placeholder="Observation, mesure, repère…"></textarea>
+      </div>
+      <div>
+        <label>Photo</label>
+        <div class="shot" id="shot">
+          <span class="big">📷</span>
+          <span id="shotLabel">Prendre / choisir</span>
+        </div>
+      </div>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" capture="environment">
+    <div class="foot">
+      <button class="btn" id="addBtn" disabled>Ajouter au tableau</button>
+    </div>
+  </div>
+
+  <div class="thead"><div>Photo</div><div>Titre</div><div>Commentaire</div><div></div></div>
+  <div id="rows"></div>
+</div>
+
+<div class="lb" id="lb"><img id="lbImg" alt=""></div>
+<canvas id="cv"></canvas>
+
+<script>
+const $ = s => document.querySelector(s);
+
+/* Stockage : localStorage si dispo (fichier ouvert/déployé), sinon mémoire (aperçu) */
+const store = (() => {
+  let mem = {}, ok = false;
+  try { localStorage.setItem('__t','1'); localStorage.removeItem('__t'); ok = true; } catch(e){}
+  return {
+    get(k){ if(ok){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):null; }catch(e){} } return mem[k]??null; },
+    set(k,v){ if(ok){ try{ localStorage.setItem(k,JSON.stringify(v)); return; }catch(e){} } mem[k]=v; }
+  };
+})();
+
+let data = store.get('carnet') || { books:{}, current:null };
+let pendingPhoto = null;
+const save = () => store.set('carnet', data);
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+
+/* ---- Démarrage ---- */
+function boot(){
+  const ids = Object.keys(data.books);
+  if(!ids.length || !data.current || !data.books[data.current]) openSetup();
+  else openApp();
+}
+function openSetup(){ $('#setup').classList.add('show'); $('#app').style.display='none'; $('#setupName').value=''; $('#setupName').focus(); }
+function openApp(){ $('#setup').classList.remove('show'); $('#app').style.display='block'; render(); }
+
+$('#setupGo').onclick = createBook;
+$('#setupName').addEventListener('keydown', e => { if(e.key==='Enter') createBook(); });
+function createBook(){
+  const name = $('#setupName').value.trim() || 'Tableau sans nom';
+  const id = uid();
+  data.books[id] = { name, entries:[] };
+  data.current = id; save(); openApp();
+}
+$('#newBook').onclick = openSetup;
+
+/* ---- Nom du tableau ---- */
+$('#bookName').addEventListener('input', e => { data.books[data.current].name = e.target.value; save(); refreshSwitch(); });
+
+/* ---- Changement de tableau ---- */
+$('#bookSwitch').onchange = e => { data.current = e.target.value; save(); render(); };
+function refreshSwitch(){
+  const sel = $('#bookSwitch');
+  sel.innerHTML = Object.entries(data.books)
+    .map(([id,b]) => `<option value="${id}">${(b.name||'Sans nom').replace(/</g,'&lt;')}</option>`).join('');
+  sel.value = data.current;
+}
+
+/* ---- Photo ---- */
+$('#shot').onclick = () => $('#fileInput').click();
+$('#fileInput').onclick = e => { e.target.value=''; };
+$('#fileInput').onchange = e => {
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => resize(r.result, out => {
+    pendingPhoto = out;
+    $('#shot').innerHTML = `<img src="${out}" alt="">`;
+    $('#shotLabel') && null;
+    $('#addBtn').disabled = false;
+  });
+  r.readAsDataURL(f);
+};
+function resize(src, cb){
+  const img = new Image();
+  img.onload = () => {
+    const max=1280; let {naturalWidth:w, naturalHeight:h} = img;
+    const r = Math.min(1, max/Math.max(w,h)); w=Math.round(w*r); h=Math.round(h*r);
+    const c=$('#cv'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h);
+    cb(c.toDataURL('image/jpeg',0.82));
+  };
+  img.src = src;
+}
+
+/* ---- Ajouter une entrée ---- */
+$('#addBtn').onclick = () => {
+  if(!pendingPhoto) return;
+  data.books[data.current].entries.unshift({
+    id:uid(), title:$('#title').value.trim(), comment:$('#comment').value.trim(),
+    photo:pendingPhoto, when:Date.now()
+  });
+  save();
+  $('#title').value=''; $('#comment').value=''; pendingPhoto=null;
+  $('#shot').innerHTML = `<span class="big">📷</span><span id="shotLabel">Prendre / choisir</span>`;
+  $('#addBtn').disabled = true;
+  render(); $('#title').focus();
+};
+
+/* ---- Rendu ---- */
+function fmt(t){ const d=new Date(t);
+  return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})+' · '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
+
+function render(){
+  const b = data.books[data.current];
+  $('#bookName').value = b.name;
+  refreshSwitch();
+  $('#count').textContent = b.entries.length + (b.entries.length>1?' entrées':' entrée');
+  const rows = $('#rows');
+  if(!b.entries.length){ rows.innerHTML = '<div class="empty">Ajoute ta première photo ci-dessus.</div>'; return; }
+  rows.innerHTML = '';
+  b.entries.forEach(en => {
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `
+      <img class="thumb" src="${en.photo}" alt="">
+      <div><div class="rtitle"></div><div class="rwhen">${fmt(en.when)}</div></div>
+      <div class="rcomment"></div>
+      <button class="del" title="Supprimer">×</button>`;
+    row.querySelector('.rtitle').textContent = en.title || '(sans titre)';
+    row.querySelector('.rcomment').textContent = en.comment || '';
+    row.querySelector('.thumb').onclick = () => { $('#lbImg').src = en.photo; $('#lb').classList.add('show'); };
+    row.querySelector('.del').onclick = () => {
+      b.entries = b.entries.filter(x => x.id !== en.id); save(); render();
+    };
+    rows.appendChild(row);
+  });
+}
+
+$('#lb').onclick = () => $('#lb').classList.remove('show');
+$('#printBtn').onclick = () => window.print();
+
+boot();
+</script>
