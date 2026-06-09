@@ -50,7 +50,7 @@
  
   /* Bandeau de photos en attente */
   .strip{display:flex;flex-wrap:wrap;gap:8px}
-  .pthumb{position:relative;width:72px;height:72px;border-radius:9px;overflow:hidden;background:#000}
+  .pthumb{position:relative;width:72px;height:72px;border-radius:9px;overflow:hidden;background:#0b0e1c}
   .pthumb img{width:100%;height:100%;object-fit:cover;cursor:pointer;display:block}
   .pthumb .x{position:absolute;top:2px;right:2px;width:20px;height:20px;border:0;border-radius:6px;background:rgba(0,0,0,.62);color:#fff;font-size:14px;line-height:18px;text-align:center;cursor:pointer;padding:0}
   .pthumb .x:hover{background:var(--orange)}
@@ -59,11 +59,12 @@
   .padd:hover{border-color:var(--orange)} .padd .big{font-size:20px}
  
   /* Tableau */
-  .thead,.row{display:grid;grid-template-columns:104px 1.1fr 2fr 38px;gap:14px;align-items:center}
+  .thead,.row{display:grid;grid-template-columns:150px 1.1fr 1.7fr 38px;gap:14px;align-items:center}
   .thead{padding:0 14px 10px;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-dim)}
   .row{background:var(--navy-soft);border:1px solid var(--navy-line);border-radius:13px;padding:12px 14px;margin-bottom:12px}
-  .row .photos{display:flex;flex-wrap:wrap;gap:4px}
-  .row .photos img{width:46px;height:46px;border-radius:7px;object-fit:cover;cursor:pointer;background:#000}
+  /* Grille 2 lignes, remplie colonne par colonne (comme le Word) */
+  .row .photos{display:grid;grid-template-rows:repeat(2,auto);grid-auto-flow:column;grid-auto-columns:max-content;gap:5px;overflow-x:auto;padding-bottom:2px}
+  .row .photos img{width:64px;height:48px;border-radius:6px;object-fit:contain;background:#0b0e1c;cursor:pointer}
   .row .rtitle{font-weight:700;font-size:15px;word-break:break-word}
   .row .rcomment{font-size:14px;line-height:1.45;color:#dfe2f0;white-space:pre-wrap;word-break:break-word}
   .row .rwhen{font-size:11px;color:var(--ink-dim);margin-top:5px}
@@ -89,7 +90,7 @@
     .add .grid{grid-template-columns:1fr}
     .thead{display:none}
     .row{grid-template-columns:1fr;gap:8px;position:relative}
-    .row .photos img{width:64px;height:64px}
+    .row .photos img{width:74px;height:56px}
     .row .del{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);border-radius:8px}
   }
   canvas{display:none}
@@ -178,7 +179,6 @@ const store = (() => {
  
 let data = store.get('carnet') || { books:{}, current:null, logo:null };
 if(!('logo' in data)) data.logo = null;
-/* Migration : ancien champ photo -> photos[] */
 for(const id in data.books){ for(const en of data.books[id].entries){
   if(en.photo && !en.photos){ en.photos=[en.photo]; delete en.photo; }
   if(!Array.isArray(en.photos)) en.photos=[];
@@ -230,7 +230,7 @@ $('#logoInput').onchange = e => {
 };
 function refreshLogoBtn(){ $('#logoBtn').textContent = data.logo ? 'Logo ✓' : 'Logo'; }
  
-/* Redimensionnement */
+/* Redimensionnement à l'import */
 function resize(src, opt, cb){
   const img = new Image();
   img.onload = () => {
@@ -245,6 +245,23 @@ function resize(src, opt, cb){
   img.src = src;
 }
  
+/* Uniformisation : place une photo (rognée, pivotée ou non) dans une boîte W×H
+   identique pour toutes, sans la recadrer (letterbox sur fond blanc). */
+function normalize(src, W, H){
+  return new Promise(res=>{
+    const i=new Image();
+    i.onload=()=>{
+      const c=document.createElement('canvas'); c.width=W; c.height=H;
+      const x=c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,W,H);
+      const r=Math.min(W/i.naturalWidth, H/i.naturalHeight);
+      const w=i.naturalWidth*r, h=i.naturalHeight*r;
+      x.drawImage(i,(W-w)/2,(H-h)/2,w,h);
+      res(c.toDataURL('image/jpeg',0.85));
+    };
+    i.src=src;
+  });
+}
+ 
 /* Sélection de photos (multiple) */
 $('#fileInput').onclick = e => { e.target.value=''; };
 $('#fileInput').onchange = async e => {
@@ -253,7 +270,7 @@ $('#fileInput').onchange = async e => {
     await new Promise(res => { const rd=new FileReader(); rd.onload=()=>resize(rd.result,{max:1280,mime:'image/jpeg'},out=>{ pendingPhotos.push(out); res(); }); rd.readAsDataURL(f); });
   }
   renderStrip();
-  if(files.length === 1) openCrop(pendingPhotos.length-1); // recadrage immédiat si une seule photo
+  if(files.length === 1) openCrop(pendingPhotos.length-1);
 };
  
 /* Bandeau des photos en attente */
@@ -376,6 +393,10 @@ function b64ToBytes(dataUrl){
 }
 function imgDims(src){ return new Promise(res=>{ const i=new Image(); i.onload=()=>res({w:i.naturalWidth,h:i.naturalHeight}); i.src=src; }); }
  
+/* Taille uniforme des photos dans le Word (boîte 4:3) */
+const PW=64, PH=48;                 // taille affichée dans le doc (px)
+const NORMW=PW*4, NORMH=PH*4;       // rendu net (×4)
+ 
 $('#wordBtn').onclick = exportDocx;
 async function exportDocx(){
   const btn=$('#wordBtn'); const old=btn.textContent;
@@ -387,9 +408,12 @@ async function exportDocx(){
   const { Document, Packer, Paragraph, TextRun, ImageRun, Table, TableRow, TableCell,
           WidthType, AlignmentType, BorderStyle, VerticalAlign, Header, Footer } = D;
   const NAVY='1A1F36', ORANGE='D94215', GREY='8A90A6', LINE='D8DBE3', BODY='2B2F45';
+  const none={style:BorderStyle.NONE,size:0,color:'FFFFFF'};
+  const noBorders={top:none,bottom:none,left:none,right:none,insideHorizontal:none,insideVertical:none};
   const b = data.books[data.current];
   const list = b.entries.slice().reverse();
  
+  // En-tête : logo en haut à droite (ou mot-symbole de repli)
   let headerKids;
   if(data.logo){
     const d = await imgDims(data.logo); const h=40, w=Math.round(h*d.w/d.h);
@@ -408,17 +432,43 @@ async function exportDocx(){
  
   let n=1;
   for(const en of list){
-    const photoParas=[];
-    for(let k=0;k<en.photos.length;k++){
-      const p=en.photos[k]; const d=await imgDims(p); const w=130, h=Math.round(w*d.h/d.w);
-      photoParas.push(new Paragraph({ spacing:{after: k<en.photos.length-1?70:0},
-        children:[ new ImageRun({ type:'jpg', data:b64ToBytes(p), transformation:{width:w,height:h} }) ] }));
+    // Uniformisation de toutes les photos à la même taille
+    const norm=[];
+    for(const p of en.photos) norm.push(await normalize(p, NORMW, NORMH));
+ 
+    // Grille 2 lignes, remplie colonne par colonne :
+    //  1  3  5 …
+    //  2  4  6 …
+    let photoCell;
+    if(!norm.length){
+      photoCell = new TableCell({ verticalAlign:VerticalAlign.CENTER, margins:{top:110,bottom:110,left:130,right:130},
+        children:[ new Paragraph({ children:[ new TextRun({ text:'—', font:'Arial', size:18, color:GREY }) ] }) ] });
+    } else {
+      const cols = Math.ceil(norm.length/2);
+      const colW = PW*15 + 80; // largeur d'une colonne de photos (twips)
+      const mkImg = (src)=> new Paragraph({ children:[ new ImageRun({ type:'jpg', data:b64ToBytes(src), transformation:{width:PW,height:PH} }) ] });
+      const blank = ()=> new Paragraph({ children:[] });
+      const nrows=[];
+      const nbRows = norm.length>=2 ? 2 : 1;
+      for(let r=0;r<nbRows;r++){
+        const cells=[];
+        for(let c=0;c<cols;c++){
+          const k = c*2 + r;            // index colonne par colonne
+          cells.push(new TableCell({ borders:noBorders, margins:{top:30,bottom:30,left:30,right:30},
+            children:[ k<norm.length ? mkImg(norm[k]) : blank() ] }));
+        }
+        nrows.push(new TableRow({ children:cells }));
+      }
+      const nested = new Table({ borders:noBorders, columnWidths:Array(cols).fill(colW),
+        width:{ size:cols*colW, type:WidthType.DXA }, rows:nrows });
+      photoCell = new TableCell({ verticalAlign:VerticalAlign.CENTER, margins:{top:90,bottom:90,left:110,right:110},
+        children:[ nested, new Paragraph({ children:[], spacing:{before:0,after:0} }) ] });
     }
-    if(!photoParas.length) photoParas.push(new Paragraph({ children:[ new TextRun({ text:'—', font:'Arial', size:18, color:GREY }) ] }));
+ 
     const cell = (kids)=> new TableCell({ verticalAlign:VerticalAlign.CENTER, margins:{top:110,bottom:110,left:130,right:130}, children:kids });
     rows.push(new TableRow({ children:[
       cell([ new Paragraph({ children:[ new TextRun({ text:String(n), font:'Arial', size:19, color:'555555' }) ] }) ]),
-      cell(photoParas),
+      photoCell,
       cell([ new Paragraph({ children:[ new TextRun({ text:en.title||'(sans titre)', bold:true, font:'Arial', size:21, color:NAVY }) ] }),
              new Paragraph({ spacing:{before:50}, children:[ new TextRun({ text:fmt(en.when), font:'Arial', size:16, color:GREY }) ] }) ]),
       cell([ new Paragraph({ children:[ new TextRun({ text:en.comment||'—', font:'Arial', size:20, color:BODY }) ] }) ]),
@@ -429,7 +479,7 @@ async function exportDocx(){
   const bd={ style:BorderStyle.SINGLE, size:4, color:LINE };
   const table=new Table({
     width:{ size:9026, type:WidthType.DXA },
-    columnWidths:[620,2400,2806,3200],
+    columnWidths:[600,3200,2700,2526],
     borders:{ top:bd,bottom:bd,left:bd,right:bd,insideHorizontal:bd,insideVertical:bd },
     rows
   });
