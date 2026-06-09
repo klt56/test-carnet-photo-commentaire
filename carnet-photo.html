@@ -67,7 +67,7 @@
   .row{background:var(--navy-soft);border:1px solid var(--navy-line);border-radius:13px;padding:12px 14px;margin-bottom:12px}
   /* Grille 2 lignes, remplie colonne par colonne, écarts égaux */
   .row .photos{display:grid;grid-template-rows:repeat(2,auto);grid-auto-flow:column;grid-auto-columns:max-content;gap:5px;overflow-x:auto;padding-bottom:2px}
-  .row .photos img{width:72px;height:54px;border-radius:6px;object-fit:cover;background:#0b0e1c;cursor:pointer}
+  .row .photos img{width:72px;height:54px;border-radius:6px;object-fit:contain;background:#0b0e1c;cursor:pointer}
   .row .rtitle{font-weight:700;font-size:15px;word-break:break-word}
   .row .rcomment{font-size:14px;line-height:1.45;color:#dfe2f0;white-space:pre-wrap;word-break:break-word}
   .row .rwhen{font-size:11px;color:var(--ink-dim);margin-top:5px}
@@ -254,15 +254,15 @@ function resize(src, opt, cb){
   img.src = src;
 }
  
-/* Uniformisation : remplit (cover) une boîte W×H identique pour toutes les photos.
-   Pas de bande blanche -> toutes les photos sont des rectangles identiques. */
+/* Uniformisation : place chaque photo dans une boîte W×H identique, image entière
+   visible (le vide éventuel est comblé en blanc). */
 function normalize(src, W, H){
   return new Promise(res=>{
     const i=new Image();
     i.onload=()=>{
       const c=document.createElement('canvas'); c.width=W; c.height=H;
       const x=c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,W,H);
-      const r=Math.max(W/i.naturalWidth, H/i.naturalHeight); // cover
+      const r=Math.min(W/i.naturalWidth, H/i.naturalHeight); // contain : image entière
       const w=i.naturalWidth*r, h=i.naturalHeight*r;
       x.drawImage(i,(W-w)/2,(H-h)/2,w,h);
       res(c.toDataURL('image/jpeg',0.85));
@@ -299,7 +299,7 @@ function renderStrip(){
   $('#addBtn').disabled = pendingPhotos.length===0;
 }
  
-/* ---- Recadrage / rotation (Cropper.js), verrouillé au format 4:3 ---- */
+/* ---- Recadrage / rotation (Cropper.js), recadrage libre ---- */
 let cropperReady=null, cropper=null, cropIndex=-1;
 function loadCropper(){
   if(window.Cropper) return Promise.resolve(window.Cropper);
@@ -323,7 +323,7 @@ async function openCrop(i){
   cropIndex = i;
   const img = $('#cropImg');
   $('#crop').classList.add('show');
-  const init = () => { if(cropper) cropper.destroy(); cropper = new C(img, {aspectRatio:RATIO, viewMode:1, autoCropArea:1, background:false, responsive:true, checkOrientation:true}); };
+  const init = () => { if(cropper) cropper.destroy(); cropper = new C(img, {viewMode:1, autoCropArea:1, background:false, responsive:true, checkOrientation:true}); };
   img.onload = init;
   img.src = pendingPhotos[i];
   if(img.complete && img.naturalWidth) init();
