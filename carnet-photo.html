@@ -39,37 +39,42 @@
   select{background:var(--navy-soft);border:1px solid var(--navy-line);color:#fff;font-family:inherit;font-size:13px;padding:9px 10px;border-radius:9px}
   .count{color:var(--ink-dim);font-size:13px;margin:2px 0 22px}
  
-  /* Formulaire d'ajout */
-  .add{background:var(--navy-soft);border:1px solid var(--navy-line);border-radius:16px;padding:16px;margin-bottom:26px}
+  /* Formulaire d'ajout / édition */
+  .add{background:var(--navy-soft);border:1px solid var(--navy-line);border-radius:16px;padding:16px;margin-bottom:26px;transition:border-color .2s}
+  .add.editing{border-color:var(--orange)}
+  .editbadge{display:none;font-size:12px;font-weight:700;color:var(--orange);margin-bottom:10px}
+  .add.editing .editbadge{display:block}
   .add .grid{display:grid;grid-template-columns:1fr 250px;gap:16px}
   .add label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-dim);margin:0 0 6px}
   .add input[type=text],.add textarea{width:100%;background:var(--navy);border:1px solid var(--navy-line);border-radius:9px;color:#fff;font-family:inherit;font-size:15px;padding:11px 12px}
   .add input:focus,.add textarea:focus{outline:none;border-color:var(--orange)}
   .add textarea{min-height:64px;resize:vertical}
-  .add .foot{display:flex;justify-content:flex-end;margin-top:14px}
+  .add .foot{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}
  
   /* Bandeau de photos en attente */
   .strip{display:flex;flex-wrap:wrap;gap:8px}
-  .pthumb{position:relative;width:72px;height:72px;border-radius:9px;overflow:hidden;background:#0b0e1c}
+  .pthumb{position:relative;width:72px;height:54px;border-radius:9px;overflow:hidden;background:#0b0e1c}
   .pthumb img{width:100%;height:100%;object-fit:cover;cursor:pointer;display:block}
   .pthumb .x{position:absolute;top:2px;right:2px;width:20px;height:20px;border:0;border-radius:6px;background:rgba(0,0,0,.62);color:#fff;font-size:14px;line-height:18px;text-align:center;cursor:pointer;padding:0}
   .pthumb .x:hover{background:var(--orange)}
   .pthumb .edit{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.55);color:#fff;font-size:10px;text-align:center;padding:2px 0;pointer-events:none}
-  .padd{width:72px;height:72px;border-radius:9px;border:1.5px dashed rgba(217,66,21,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink-dim);cursor:pointer;font-size:11px;gap:2px}
-  .padd:hover{border-color:var(--orange)} .padd .big{font-size:20px}
+  .padd{width:72px;height:54px;border-radius:9px;border:1.5px dashed rgba(217,66,21,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink-dim);cursor:pointer;font-size:11px;gap:2px}
+  .padd:hover{border-color:var(--orange)} .padd .big{font-size:18px}
  
   /* Tableau */
-  .thead,.row{display:grid;grid-template-columns:150px 1.1fr 1.7fr 38px;gap:14px;align-items:center}
+  .thead,.row{display:grid;grid-template-columns:150px 1.1fr 1.7fr 44px;gap:14px;align-items:center}
   .thead{padding:0 14px 10px;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-dim)}
   .row{background:var(--navy-soft);border:1px solid var(--navy-line);border-radius:13px;padding:12px 14px;margin-bottom:12px}
-  /* Grille 2 lignes, remplie colonne par colonne (comme le Word) */
+  /* Grille 2 lignes, remplie colonne par colonne, écarts égaux */
   .row .photos{display:grid;grid-template-rows:repeat(2,auto);grid-auto-flow:column;grid-auto-columns:max-content;gap:5px;overflow-x:auto;padding-bottom:2px}
-  .row .photos img{width:64px;height:48px;border-radius:6px;object-fit:contain;background:#0b0e1c;cursor:pointer}
+  .row .photos img{width:72px;height:54px;border-radius:6px;object-fit:cover;background:#0b0e1c;cursor:pointer}
   .row .rtitle{font-weight:700;font-size:15px;word-break:break-word}
   .row .rcomment{font-size:14px;line-height:1.45;color:#dfe2f0;white-space:pre-wrap;word-break:break-word}
   .row .rwhen{font-size:11px;color:var(--ink-dim);margin-top:5px}
-  .row .del{background:transparent;border:0;color:var(--ink-dim);font-size:20px;cursor:pointer;line-height:1;padding:4px}
-  .row .del:hover{color:var(--orange)}
+  .row .acts{display:flex;flex-direction:column;gap:4px;align-items:center}
+  .row .acts button{background:transparent;border:0;cursor:pointer;line-height:1;padding:4px;font-size:17px;color:var(--ink-dim)}
+  .row .acts .edit:hover{color:#fff}
+  .row .acts .del:hover{color:var(--orange)}
   .empty{color:var(--ink-dim);font-size:14px;text-align:center;padding:26px;border:1px dashed var(--navy-line);border-radius:13px}
  
   /* Lightbox */
@@ -90,8 +95,8 @@
     .add .grid{grid-template-columns:1fr}
     .thead{display:none}
     .row{grid-template-columns:1fr;gap:8px;position:relative}
-    .row .photos img{width:74px;height:56px}
-    .row .del{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);border-radius:8px}
+    .row .photos img{width:84px;height:63px}
+    .row .acts{position:absolute;top:8px;right:8px;flex-direction:row;background:rgba(0,0,0,.5);border-radius:8px}
   }
   canvas{display:none}
 </style>
@@ -121,7 +126,8 @@
   </header>
   <div class="count" id="count"></div>
  
-  <div class="add">
+  <div class="add" id="addBox">
+    <div class="editbadge" id="editBadge">✎ Modification d'une entrée existante</div>
     <div class="grid">
       <div>
         <label for="title">Titre de l'entrée</label>
@@ -137,6 +143,7 @@
     <input type="file" id="fileInput" accept="image/*" capture="environment" multiple>
     <input type="file" id="logoInput" accept="image/*">
     <div class="foot">
+      <button class="btn ghost" id="cancelEdit" style="display:none">Annuler la modification</button>
       <button class="btn" id="addBtn" disabled>Ajouter au tableau</button>
     </div>
   </div>
@@ -166,6 +173,7 @@
 <script>
 const $ = s => document.querySelector(s);
 const toast = (msg) => { const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400); };
+const RATIO = 4/3; // format unique de toutes les photos
  
 /* Stockage : localStorage si dispo (fichier ouvert/déployé), sinon mémoire (aperçu) */
 const store = (() => {
@@ -185,6 +193,7 @@ for(const id in data.books){ for(const en of data.books[id].entries){
 }}
  
 let pendingPhotos = [];
+let editingId = null;
 const save = () => store.set('carnet', data);
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
  
@@ -211,7 +220,7 @@ $('#newBook').onclick = openSetup;
 $('#bookName').addEventListener('input', e => { data.books[data.current].name = e.target.value; save(); refreshSwitch(); });
  
 /* Changement de tableau */
-$('#bookSwitch').onchange = e => { data.current = e.target.value; save(); render(); };
+$('#bookSwitch').onchange = e => { data.current = e.target.value; save(); cancelEdit(); render(); };
 function refreshSwitch(){
   const sel = $('#bookSwitch');
   sel.innerHTML = Object.entries(data.books)
@@ -245,15 +254,15 @@ function resize(src, opt, cb){
   img.src = src;
 }
  
-/* Uniformisation : place une photo (rognée, pivotée ou non) dans une boîte W×H
-   identique pour toutes, sans la recadrer (letterbox sur fond blanc). */
+/* Uniformisation : remplit (cover) une boîte W×H identique pour toutes les photos.
+   Pas de bande blanche -> toutes les photos sont des rectangles identiques. */
 function normalize(src, W, H){
   return new Promise(res=>{
     const i=new Image();
     i.onload=()=>{
       const c=document.createElement('canvas'); c.width=W; c.height=H;
       const x=c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,W,H);
-      const r=Math.min(W/i.naturalWidth, H/i.naturalHeight);
+      const r=Math.max(W/i.naturalWidth, H/i.naturalHeight); // cover
       const w=i.naturalWidth*r, h=i.naturalHeight*r;
       x.drawImage(i,(W-w)/2,(H-h)/2,w,h);
       res(c.toDataURL('image/jpeg',0.85));
@@ -290,7 +299,7 @@ function renderStrip(){
   $('#addBtn').disabled = pendingPhotos.length===0;
 }
  
-/* ---- Recadrage / rotation (Cropper.js) ---- */
+/* ---- Recadrage / rotation (Cropper.js), verrouillé au format 4:3 ---- */
 let cropperReady=null, cropper=null, cropIndex=-1;
 function loadCropper(){
   if(window.Cropper) return Promise.resolve(window.Cropper);
@@ -314,7 +323,7 @@ async function openCrop(i){
   cropIndex = i;
   const img = $('#cropImg');
   $('#crop').classList.add('show');
-  const init = () => { if(cropper) cropper.destroy(); cropper = new C(img, {viewMode:1, autoCropArea:1, background:false, responsive:true, checkOrientation:true}); };
+  const init = () => { if(cropper) cropper.destroy(); cropper = new C(img, {aspectRatio:RATIO, viewMode:1, autoCropArea:1, background:false, responsive:true, checkOrientation:true}); };
   img.onload = init;
   img.src = pendingPhotos[i];
   if(img.complete && img.naturalWidth) init();
@@ -331,17 +340,40 @@ $('#cropOk').onclick = () => {
   closeCrop(); renderStrip();
 };
  
-/* Ajouter une entrée */
+/* Ajouter / enregistrer une entrée */
 $('#addBtn').onclick = () => {
   if(!pendingPhotos.length) return;
-  data.books[data.current].entries.unshift({
-    id:uid(), title:$('#title').value.trim(), comment:$('#comment').value.trim(),
-    photos:pendingPhotos.slice(), when:Date.now()
-  });
-  save();
-  $('#title').value=''; $('#comment').value=''; pendingPhotos=[];
-  renderStrip(); render(); $('#title').focus();
+  const b = data.books[data.current];
+  if(editingId){
+    const en = b.entries.find(x => x.id===editingId);
+    if(en){ en.title=$('#title').value.trim(); en.comment=$('#comment').value.trim(); en.photos=pendingPhotos.slice(); }
+    toast('Entrée modifiée');
+  } else {
+    b.entries.unshift({ id:uid(), title:$('#title').value.trim(), comment:$('#comment').value.trim(), photos:pendingPhotos.slice(), when:Date.now() });
+  }
+  save(); resetForm(); render(); $('#title').focus();
 };
+$('#cancelEdit').onclick = cancelEdit;
+function cancelEdit(){ if(editingId) resetForm(); }
+function resetForm(){
+  editingId=null; pendingPhotos=[];
+  $('#title').value=''; $('#comment').value='';
+  $('#addBox').classList.remove('editing');
+  $('#cancelEdit').style.display='none';
+  $('#addBtn').textContent='Ajouter au tableau';
+  renderStrip();
+}
+function editEntry(id){
+  const en = data.books[data.current].entries.find(x => x.id===id); if(!en) return;
+  editingId = id;
+  $('#title').value = en.title||''; $('#comment').value = en.comment||'';
+  pendingPhotos = en.photos.slice();
+  $('#addBox').classList.add('editing');
+  $('#cancelEdit').style.display='inline-block';
+  $('#addBtn').textContent='Enregistrer les modifications';
+  renderStrip();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
  
 /* Rendu écran */
 function fmt(t){ const d=new Date(t);
@@ -362,12 +394,13 @@ function render(){
       <div class="photos"></div>
       <div><div class="rtitle"></div><div class="rwhen">${fmt(en.when)}</div></div>
       <div class="rcomment"></div>
-      <button class="del" title="Supprimer l'entrée">×</button>`;
+      <div class="acts"><button class="edit" title="Modifier">✎</button><button class="del" title="Supprimer">×</button></div>`;
     const ph = row.querySelector('.photos');
     en.photos.forEach(src => { const im=document.createElement('img'); im.src=src; im.onclick=()=>{ $('#lbImg').src=src; $('#lb').classList.add('show'); }; ph.appendChild(im); });
     row.querySelector('.rtitle').textContent = en.title || '(sans titre)';
     row.querySelector('.rcomment').textContent = en.comment || '';
-    row.querySelector('.del').onclick = () => { b.entries = b.entries.filter(x => x.id !== en.id); save(); render(); };
+    row.querySelector('.edit').onclick = () => editEntry(en.id);
+    row.querySelector('.del').onclick = () => { if(editingId===en.id) resetForm(); b.entries = b.entries.filter(x => x.id !== en.id); save(); render(); };
     rows.appendChild(row);
   });
 }
@@ -393,9 +426,9 @@ function b64ToBytes(dataUrl){
 }
 function imgDims(src){ return new Promise(res=>{ const i=new Image(); i.onload=()=>res({w:i.naturalWidth,h:i.naturalHeight}); i.src=src; }); }
  
-/* Taille uniforme des photos dans le Word (boîte 4:3) */
-const PW=64, PH=48;                 // taille affichée dans le doc (px)
-const NORMW=PW*4, NORMH=PH*4;       // rendu net (×4)
+/* Taille uniforme des photos dans le Word (boîte 4:3, aussi grande que la colonne le permet) */
+const PW=74, PH=Math.round(PW/RATIO);   // affiché dans le doc (px) ~74×56
+const NORMW=PW*4, NORMH=PH*4;           // rendu net
  
 $('#wordBtn').onclick = exportDocx;
 async function exportDocx(){
@@ -413,7 +446,6 @@ async function exportDocx(){
   const b = data.books[data.current];
   const list = b.entries.slice().reverse();
  
-  // En-tête : logo en haut à droite (ou mot-symbole de repli)
   let headerKids;
   if(data.logo){
     const d = await imgDims(data.logo); const h=40, w=Math.round(h*d.w/d.h);
@@ -430,38 +462,35 @@ async function exportDocx(){
     children:[ new Paragraph({ children:[ new TextRun({ text:t, bold:true, color:'FFFFFF', size:19, font:'Arial' }) ] }) ] });
   const rows=[ new TableRow({ tableHeader:true, children:[ hcell('N°'), hcell('Photos'), hcell('Titre'), hcell('Commentaire') ] }) ];
  
+  const GAP=30; // marge égale autour de chaque photo (twips) -> écarts réguliers
   let n=1;
   for(const en of list){
-    // Uniformisation de toutes les photos à la même taille
     const norm=[];
     for(const p of en.photos) norm.push(await normalize(p, NORMW, NORMH));
  
-    // Grille 2 lignes, remplie colonne par colonne :
-    //  1  3  5 …
-    //  2  4  6 …
     let photoCell;
     if(!norm.length){
       photoCell = new TableCell({ verticalAlign:VerticalAlign.CENTER, margins:{top:110,bottom:110,left:130,right:130},
         children:[ new Paragraph({ children:[ new TextRun({ text:'—', font:'Arial', size:18, color:GREY }) ] }) ] });
     } else {
       const cols = Math.ceil(norm.length/2);
-      const colW = PW*15 + 80; // largeur d'une colonne de photos (twips)
+      const colW = PW*15 + GAP*2;
       const mkImg = (src)=> new Paragraph({ children:[ new ImageRun({ type:'jpg', data:b64ToBytes(src), transformation:{width:PW,height:PH} }) ] });
       const blank = ()=> new Paragraph({ children:[] });
-      const nrows=[];
       const nbRows = norm.length>=2 ? 2 : 1;
+      const nrows=[];
       for(let r=0;r<nbRows;r++){
         const cells=[];
         for(let c=0;c<cols;c++){
-          const k = c*2 + r;            // index colonne par colonne
-          cells.push(new TableCell({ borders:noBorders, margins:{top:30,bottom:30,left:30,right:30},
+          const k = c*2 + r; // colonne par colonne : 1,2 puis 3,4 ...
+          cells.push(new TableCell({ borders:noBorders, margins:{top:GAP,bottom:GAP,left:GAP,right:GAP},
             children:[ k<norm.length ? mkImg(norm[k]) : blank() ] }));
         }
         nrows.push(new TableRow({ children:cells }));
       }
       const nested = new Table({ borders:noBorders, columnWidths:Array(cols).fill(colW),
         width:{ size:cols*colW, type:WidthType.DXA }, rows:nrows });
-      photoCell = new TableCell({ verticalAlign:VerticalAlign.CENTER, margins:{top:90,bottom:90,left:110,right:110},
+      photoCell = new TableCell({ verticalAlign:VerticalAlign.CENTER, margins:{top:80,bottom:80,left:90,right:90},
         children:[ nested, new Paragraph({ children:[], spacing:{before:0,after:0} }) ] });
     }
  
@@ -479,7 +508,7 @@ async function exportDocx(){
   const bd={ style:BorderStyle.SINGLE, size:4, color:LINE };
   const table=new Table({
     width:{ size:9026, type:WidthType.DXA },
-    columnWidths:[600,3200,2700,2526],
+    columnWidths:[480,3600,2400,2546],
     borders:{ top:bd,bottom:bd,left:bd,right:bd,insideHorizontal:bd,insideVertical:bd },
     rows
   });
