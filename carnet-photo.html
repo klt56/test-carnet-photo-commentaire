@@ -41,21 +41,29 @@
  
   /* Formulaire d'ajout */
   .add{background:var(--navy-soft);border:1px solid var(--navy-line);border-radius:16px;padding:16px;margin-bottom:26px}
-  .add .grid{display:grid;grid-template-columns:1fr 140px;gap:14px}
+  .add .grid{display:grid;grid-template-columns:1fr 250px;gap:16px}
   .add label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-dim);margin:0 0 6px}
   .add input[type=text],.add textarea{width:100%;background:var(--navy);border:1px solid var(--navy-line);border-radius:9px;color:#fff;font-family:inherit;font-size:15px;padding:11px 12px}
   .add input:focus,.add textarea:focus{outline:none;border-color:var(--orange)}
   .add textarea{min-height:64px;resize:vertical}
-  .shot{aspect-ratio:1;border:1.5px dashed rgba(217,66,21,.55);border-radius:12px;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-dim);font-size:12px;text-align:center;overflow:hidden;gap:6px;padding:6px}
-  .shot:hover{border-color:var(--orange)} .shot .big{font-size:26px}
-  .shot img{width:100%;height:100%;object-fit:cover}
   .add .foot{display:flex;justify-content:flex-end;margin-top:14px}
  
+  /* Bandeau de photos en attente */
+  .strip{display:flex;flex-wrap:wrap;gap:8px}
+  .pthumb{position:relative;width:72px;height:72px;border-radius:9px;overflow:hidden;background:#000}
+  .pthumb img{width:100%;height:100%;object-fit:cover;cursor:pointer;display:block}
+  .pthumb .x{position:absolute;top:2px;right:2px;width:20px;height:20px;border:0;border-radius:6px;background:rgba(0,0,0,.62);color:#fff;font-size:14px;line-height:18px;text-align:center;cursor:pointer;padding:0}
+  .pthumb .x:hover{background:var(--orange)}
+  .pthumb .edit{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.55);color:#fff;font-size:10px;text-align:center;padding:2px 0;pointer-events:none}
+  .padd{width:72px;height:72px;border-radius:9px;border:1.5px dashed rgba(217,66,21,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink-dim);cursor:pointer;font-size:11px;gap:2px}
+  .padd:hover{border-color:var(--orange)} .padd .big{font-size:20px}
+ 
   /* Tableau */
-  .thead,.row{display:grid;grid-template-columns:74px 1.1fr 2fr 38px;gap:14px;align-items:center}
+  .thead,.row{display:grid;grid-template-columns:104px 1.1fr 2fr 38px;gap:14px;align-items:center}
   .thead{padding:0 14px 10px;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-dim)}
   .row{background:var(--navy-soft);border:1px solid var(--navy-line);border-radius:13px;padding:12px 14px;margin-bottom:12px}
-  .row .thumb{width:74px;height:74px;border-radius:9px;object-fit:cover;cursor:pointer;background:#000}
+  .row .photos{display:flex;flex-wrap:wrap;gap:4px}
+  .row .photos img{width:46px;height:46px;border-radius:7px;object-fit:cover;cursor:pointer;background:#000}
   .row .rtitle{font-weight:700;font-size:15px;word-break:break-word}
   .row .rcomment{font-size:14px;line-height:1.45;color:#dfe2f0;white-space:pre-wrap;word-break:break-word}
   .row .rwhen{font-size:11px;color:var(--ink-dim);margin-top:5px}
@@ -67,14 +75,21 @@
   .lb{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;padding:20px;z-index:60;cursor:zoom-out}
   .lb.show{display:flex} .lb img{max-width:100%;max-height:100%;border-radius:8px}
  
-  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#fff;color:var(--navy);font-weight:700;font-size:14px;padding:12px 18px;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:70}
+  /* Éditeur recadrage / rotation */
+  .crop{position:fixed;inset:0;background:#0b0e1c;display:none;flex-direction:column;z-index:80}
+  .crop.show{display:flex}
+  .crop .area{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:14px;overflow:hidden}
+  .crop .area img{max-width:100%;max-height:100%;display:block}
+  .crop .bar{display:flex;gap:8px;justify-content:center;align-items:center;padding:14px 14px calc(14px + env(safe-area-inset-bottom));flex-wrap:wrap;background:var(--navy);border-top:1px solid var(--navy-line)}
+ 
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#fff;color:var(--navy);font-weight:700;font-size:14px;padding:12px 18px;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:90}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
  
   @media (max-width:560px){
-    .add .grid{grid-template-columns:1fr} .shot{aspect-ratio:16/9}
+    .add .grid{grid-template-columns:1fr}
     .thead{display:none}
     .row{grid-template-columns:1fr;gap:8px;position:relative}
-    .row .thumb{width:100%;height:auto;aspect-ratio:4/3}
+    .row .photos img{width:64px;height:64px}
     .row .del{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);border-radius:8px}
   }
   canvas{display:none}
@@ -85,7 +100,7 @@
   <div class="box">
     <span class="dot"></span>
     <h1>Nouveau tableau</h1>
-    <p>Donne un nom à ce carnet. Toutes tes photos s'ajouteront dedans jusqu'à ce que tu en crées un autre.</p>
+    <p>Donne un nom à ce carnet. Toutes tes entrées s'ajouteront dedans jusqu'à ce que tu en crées un autre.</p>
     <input type="text" id="setupName" placeholder="ex. Inspection cuve A156 — 09/06">
     <button class="btn" id="setupGo" style="width:100%">Créer le tableau</button>
   </div>
@@ -108,37 +123,48 @@
   <div class="add">
     <div class="grid">
       <div>
-        <label for="title">Titre de la photo</label>
+        <label for="title">Titre de l'entrée</label>
         <input type="text" id="title" placeholder="ex. Virole 3 — corrosion zone basse">
         <label for="comment" style="margin-top:12px">Commentaire</label>
         <textarea id="comment" placeholder="Observation, mesure, repère…"></textarea>
       </div>
       <div>
-        <label>Photo</label>
-        <div class="shot" id="shot">
-          <span class="big">📷</span>
-          <span>Prendre / choisir</span>
-        </div>
+        <label>Photos (clique une vignette pour recadrer / pivoter)</label>
+        <div class="strip" id="photoStrip"></div>
       </div>
     </div>
-    <input type="file" id="fileInput" accept="image/*" capture="environment">
+    <input type="file" id="fileInput" accept="image/*" capture="environment" multiple>
     <input type="file" id="logoInput" accept="image/*">
     <div class="foot">
       <button class="btn" id="addBtn" disabled>Ajouter au tableau</button>
     </div>
   </div>
  
-  <div class="thead"><div>Photo</div><div>Titre</div><div>Commentaire</div><div></div></div>
+  <div class="thead"><div>Photos</div><div>Titre</div><div>Commentaire</div><div></div></div>
   <div id="rows"></div>
 </div>
  
+<!-- Lightbox -->
 <div class="lb" id="lb"><img id="lbImg" alt=""></div>
+ 
+<!-- Éditeur de recadrage -->
+<div class="crop" id="crop">
+  <div class="area"><img id="cropImg" alt=""></div>
+  <div class="bar">
+    <button class="btn ghost" id="rotL">↺ Pivoter</button>
+    <button class="btn ghost" id="rotR">↻ Pivoter</button>
+    <button class="btn ghost" id="cropReset">Réinitialiser</button>
+    <button class="btn ghost" id="cropCancel">Annuler</button>
+    <button class="btn" id="cropOk">Valider la photo</button>
+  </div>
+</div>
+ 
 <div class="toast" id="toast"></div>
 <canvas id="cv"></canvas>
  
 <script>
 const $ = s => document.querySelector(s);
-const toast = (msg) => { const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); };
+const toast = (msg) => { const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400); };
  
 /* Stockage : localStorage si dispo (fichier ouvert/déployé), sinon mémoire (aperçu) */
 const store = (() => {
@@ -152,7 +178,13 @@ const store = (() => {
  
 let data = store.get('carnet') || { books:{}, current:null, logo:null };
 if(!('logo' in data)) data.logo = null;
-let pendingPhoto = null;
+/* Migration : ancien champ photo -> photos[] */
+for(const id in data.books){ for(const en of data.books[id].entries){
+  if(en.photo && !en.photos){ en.photos=[en.photo]; delete en.photo; }
+  if(!Array.isArray(en.photos)) en.photos=[];
+}}
+ 
+let pendingPhotos = [];
 const save = () => store.set('carnet', data);
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
  
@@ -163,7 +195,7 @@ function boot(){
   else openApp();
 }
 function openSetup(){ $('#setup').classList.add('show'); $('#app').style.display='none'; $('#setupName').value=''; $('#setupName').focus(); }
-function openApp(){ $('#setup').classList.remove('show'); $('#app').style.display='block'; render(); }
+function openApp(){ $('#setup').classList.remove('show'); $('#app').style.display='block'; renderStrip(); render(); }
  
 $('#setupGo').onclick = createBook;
 $('#setupName').addEventListener('keydown', e => { if(e.key==='Enter') createBook(); });
@@ -193,26 +225,12 @@ $('#logoInput').onclick = e => { e.target.value=''; };
 $('#logoInput').onchange = e => {
   const f = e.target.files[0]; if(!f) return;
   const r = new FileReader();
-  r.onload = () => resize(r.result, {max:400, mime:'image/png'}, out => {
-    data.logo = out; save(); refreshLogoBtn(); toast('Logo enregistré');
-  });
+  r.onload = () => resize(r.result, {max:400, mime:'image/png'}, out => { data.logo = out; save(); refreshLogoBtn(); toast('Logo enregistré'); });
   r.readAsDataURL(f);
 };
 function refreshLogoBtn(){ $('#logoBtn').textContent = data.logo ? 'Logo ✓' : 'Logo'; }
  
-/* Photo */
-$('#shot').onclick = () => $('#fileInput').click();
-$('#fileInput').onclick = e => { e.target.value=''; };
-$('#fileInput').onchange = e => {
-  const f = e.target.files[0]; if(!f) return;
-  const r = new FileReader();
-  r.onload = () => resize(r.result, {max:1280, mime:'image/jpeg'}, out => {
-    pendingPhoto = out;
-    $('#shot').innerHTML = `<img src="${out}" alt="">`;
-    $('#addBtn').disabled = false;
-  });
-  r.readAsDataURL(f);
-};
+/* Redimensionnement */
 function resize(src, opt, cb){
   const img = new Image();
   img.onload = () => {
@@ -227,18 +245,85 @@ function resize(src, opt, cb){
   img.src = src;
 }
  
+/* Sélection de photos (multiple) */
+$('#fileInput').onclick = e => { e.target.value=''; };
+$('#fileInput').onchange = async e => {
+  const files = [...e.target.files]; if(!files.length) return;
+  for(const f of files){
+    await new Promise(res => { const rd=new FileReader(); rd.onload=()=>resize(rd.result,{max:1280,mime:'image/jpeg'},out=>{ pendingPhotos.push(out); res(); }); rd.readAsDataURL(f); });
+  }
+  renderStrip();
+  if(files.length === 1) openCrop(pendingPhotos.length-1); // recadrage immédiat si une seule photo
+};
+ 
+/* Bandeau des photos en attente */
+function renderStrip(){
+  const strip = $('#photoStrip'); strip.innerHTML='';
+  pendingPhotos.forEach((src,i)=>{
+    const t=document.createElement('div'); t.className='pthumb';
+    t.innerHTML = `<img src="${src}" alt=""><button class="x" title="Retirer">×</button><span class="edit">éditer</span>`;
+    t.querySelector('img').onclick = () => openCrop(i);
+    t.querySelector('.x').onclick = (ev) => { ev.stopPropagation(); pendingPhotos.splice(i,1); renderStrip(); };
+    strip.appendChild(t);
+  });
+  const add=document.createElement('div'); add.className='padd';
+  add.innerHTML = '<span class="big">📷</span><span>+ photo</span>';
+  add.onclick = () => $('#fileInput').click();
+  strip.appendChild(add);
+  $('#addBtn').disabled = pendingPhotos.length===0;
+}
+ 
+/* ---- Recadrage / rotation (Cropper.js) ---- */
+let cropperReady=null, cropper=null, cropIndex=-1;
+function loadCropper(){
+  if(window.Cropper) return Promise.resolve(window.Cropper);
+  if(cropperReady) return cropperReady;
+  cropperReady = new Promise((res,rej)=>{
+    const css=document.createElement('link'); css.rel='stylesheet';
+    css.href='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css';
+    document.head.appendChild(css);
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js';
+    s.onload=()=>window.Cropper?res(window.Cropper):rej(new Error('global'));
+    s.onerror=()=>rej(new Error('cdn'));
+    document.head.appendChild(s);
+  });
+  return cropperReady;
+}
+async function openCrop(i){
+  let C;
+  try { C = await loadCropper(); }
+  catch(e){ toast('Recadrage indisponible ici (fonctionne une fois déployé)'); return; }
+  cropIndex = i;
+  const img = $('#cropImg');
+  $('#crop').classList.add('show');
+  const init = () => { if(cropper) cropper.destroy(); cropper = new C(img, {viewMode:1, autoCropArea:1, background:false, responsive:true, checkOrientation:true}); };
+  img.onload = init;
+  img.src = pendingPhotos[i];
+  if(img.complete && img.naturalWidth) init();
+}
+function closeCrop(){ if(cropper){ cropper.destroy(); cropper=null; } $('#crop').classList.remove('show'); cropIndex=-1; }
+$('#rotL').onclick = () => cropper && cropper.rotate(-90);
+$('#rotR').onclick = () => cropper && cropper.rotate(90);
+$('#cropReset').onclick = () => cropper && cropper.reset();
+$('#cropCancel').onclick = closeCrop;
+$('#cropOk').onclick = () => {
+  if(!cropper){ closeCrop(); return; }
+  const canvas = cropper.getCroppedCanvas({maxWidth:1280, maxHeight:1280, imageSmoothingQuality:'high'});
+  if(canvas && cropIndex>-1) pendingPhotos[cropIndex] = canvas.toDataURL('image/jpeg',0.85);
+  closeCrop(); renderStrip();
+};
+ 
 /* Ajouter une entrée */
 $('#addBtn').onclick = () => {
-  if(!pendingPhoto) return;
+  if(!pendingPhotos.length) return;
   data.books[data.current].entries.unshift({
     id:uid(), title:$('#title').value.trim(), comment:$('#comment').value.trim(),
-    photo:pendingPhoto, when:Date.now()
+    photos:pendingPhotos.slice(), when:Date.now()
   });
   save();
-  $('#title').value=''; $('#comment').value=''; pendingPhoto=null;
-  $('#shot').innerHTML = `<span class="big">📷</span><span>Prendre / choisir</span>`;
-  $('#addBtn').disabled = true;
-  render(); $('#title').focus();
+  $('#title').value=''; $('#comment').value=''; pendingPhotos=[];
+  renderStrip(); render(); $('#title').focus();
 };
  
 /* Rendu écran */
@@ -251,19 +336,20 @@ function render(){
   refreshSwitch(); refreshLogoBtn();
   $('#count').textContent = b.entries.length + (b.entries.length>1?' entrées':' entrée');
   const rows = $('#rows');
-  if(!b.entries.length){ rows.innerHTML = '<div class="empty">Ajoute ta première photo ci-dessus.</div>'; return; }
+  if(!b.entries.length){ rows.innerHTML = '<div class="empty">Ajoute ta première entrée ci-dessus.</div>'; return; }
   rows.innerHTML = '';
   b.entries.forEach(en => {
     const row = document.createElement('div');
     row.className = 'row';
     row.innerHTML = `
-      <img class="thumb" src="${en.photo}" alt="">
+      <div class="photos"></div>
       <div><div class="rtitle"></div><div class="rwhen">${fmt(en.when)}</div></div>
       <div class="rcomment"></div>
-      <button class="del" title="Supprimer">×</button>`;
+      <button class="del" title="Supprimer l'entrée">×</button>`;
+    const ph = row.querySelector('.photos');
+    en.photos.forEach(src => { const im=document.createElement('img'); im.src=src; im.onclick=()=>{ $('#lbImg').src=src; $('#lb').classList.add('show'); }; ph.appendChild(im); });
     row.querySelector('.rtitle').textContent = en.title || '(sans titre)';
     row.querySelector('.rcomment').textContent = en.comment || '';
-    row.querySelector('.thumb').onclick = () => { $('#lbImg').src = en.photo; $('#lb').classList.add('show'); };
     row.querySelector('.del').onclick = () => { b.entries = b.entries.filter(x => x.id !== en.id); save(); render(); };
     rows.appendChild(row);
   });
@@ -302,9 +388,8 @@ async function exportDocx(){
           WidthType, AlignmentType, BorderStyle, VerticalAlign, Header, Footer } = D;
   const NAVY='1A1F36', ORANGE='D94215', GREY='8A90A6', LINE='D8DBE3', BODY='2B2F45';
   const b = data.books[data.current];
-  const list = b.entries.slice().reverse(); // ordre chronologique dans le rapport
+  const list = b.entries.slice().reverse();
  
-  // En-tête : logo en haut à droite (ou mot-symbole de repli)
   let headerKids;
   if(data.logo){
     const d = await imgDims(data.logo); const h=40, w=Math.round(h*d.w/d.h);
@@ -319,15 +404,21 @@ async function exportDocx(){
   const hcell = t => new TableCell({ shading:{fill:NAVY}, verticalAlign:VerticalAlign.CENTER,
     margins:{top:90,bottom:90,left:130,right:130},
     children:[ new Paragraph({ children:[ new TextRun({ text:t, bold:true, color:'FFFFFF', size:19, font:'Arial' }) ] }) ] });
-  const rows=[ new TableRow({ tableHeader:true, children:[ hcell('N°'), hcell('Photo'), hcell('Titre'), hcell('Commentaire') ] }) ];
+  const rows=[ new TableRow({ tableHeader:true, children:[ hcell('N°'), hcell('Photos'), hcell('Titre'), hcell('Commentaire') ] }) ];
  
   let n=1;
   for(const en of list){
-    const d = await imgDims(en.photo); const w=140, h=Math.round(w*d.h/d.w);
+    const photoParas=[];
+    for(let k=0;k<en.photos.length;k++){
+      const p=en.photos[k]; const d=await imgDims(p); const w=130, h=Math.round(w*d.h/d.w);
+      photoParas.push(new Paragraph({ spacing:{after: k<en.photos.length-1?70:0},
+        children:[ new ImageRun({ type:'jpg', data:b64ToBytes(p), transformation:{width:w,height:h} }) ] }));
+    }
+    if(!photoParas.length) photoParas.push(new Paragraph({ children:[ new TextRun({ text:'—', font:'Arial', size:18, color:GREY }) ] }));
     const cell = (kids)=> new TableCell({ verticalAlign:VerticalAlign.CENTER, margins:{top:110,bottom:110,left:130,right:130}, children:kids });
     rows.push(new TableRow({ children:[
       cell([ new Paragraph({ children:[ new TextRun({ text:String(n), font:'Arial', size:19, color:'555555' }) ] }) ]),
-      cell([ new Paragraph({ children:[ new ImageRun({ type:'jpg', data:b64ToBytes(en.photo), transformation:{width:w,height:h} }) ] }) ]),
+      cell(photoParas),
       cell([ new Paragraph({ children:[ new TextRun({ text:en.title||'(sans titre)', bold:true, font:'Arial', size:21, color:NAVY }) ] }),
              new Paragraph({ spacing:{before:50}, children:[ new TextRun({ text:fmt(en.when), font:'Arial', size:16, color:GREY }) ] }) ]),
       cell([ new Paragraph({ children:[ new TextRun({ text:en.comment||'—', font:'Arial', size:20, color:BODY }) ] }) ]),
